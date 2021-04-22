@@ -1,3 +1,5 @@
+# lab03_q4.py
+
 # Our goal in this exercise is to implement a simplified 1-bit ALU
 # that has 2 data inputs: {a, b}, 2 outputs: {r, cout},
 # and compute one of the following 3 functions: r = a and b,
@@ -20,10 +22,9 @@ def half_adder(a, b):
     """
         ha_carry_out, ha_sum = a + b
     """
-    ha_sum = # < add your code here >
-    ha_carry_out = # < add your code here >
+    ha_sum = a ^ b
+    ha_carry_out = a & b
     return ha_sum, ha_carry_out
-
 
 def alu (a, b, op):
     """
@@ -33,15 +34,25 @@ def alu (a, b, op):
         else if op == 2" return a + b
     """
     # Operation 0: a and b
-    op0 = # < add your code here >
+    op0 = a & b
     # Operation 1: a xnor b
-    op1 = # < add your code here >
+    op1 = ~(a ^ b)
     # Operation 2: a + b
     op2_s, op2_c = half_adder(a, b)
+
     # Based on the given "op", return the proper signals as outputs
     alu_r = pyrtl.WireVector(bitwidth=1)
     alu_cout = pyrtl.WireVector(bitwidth=1)
-    # < add your code here >
+    
+    with pyrtl.conditional_assignment:
+        with op == 0:
+            alu_r |= op0
+        with op == 1:
+            alu_r |= op1
+        with op == 2:
+            alu_r |= op2_s
+            alu_cout |= op2_c
+
     return alu_r, alu_cout
 
 # Call the above-defined "alu" function and connect its results to the block's output ports 
