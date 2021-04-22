@@ -8,12 +8,23 @@ import pyrtl
 # You can develop your design using either Boolean gates as above or PyRTL's
 # conditional assignment.
 
+# for testing
+def get_expected_output(cycle):
+    input_val = ''
+    if (sim_trace.trace['s'][cycle]==0): input_val = 'a'
+    elif (sim_trace.trace['s'][cycle]==1): input_val = 'b'
+    elif (sim_trace.trace['s'][cycle]==2): input_val = 'c'
+    elif (sim_trace.trace['s'][cycle]==3): input_val = 'd'
+    elif (sim_trace.trace['s'][cycle]==4): input_val = 'e'
+    return sim_trace.trace[input_val][cycle]
+
+
 # Declare data inputs
-i0 = pyrtl.Input(bitwidth=3, name='i0')
-i1 = pyrtl.Input(bitwidth=3, name='i1')
-i2 = pyrtl.Input(bitwidth=3, name='i2')
-i3 = pyrtl.Input(bitwidth=3, name='i3')
-i4 = pyrtl.Input(bitwidth=3, name='i4')
+a = pyrtl.Input(bitwidth=3, name='a')
+b = pyrtl.Input(bitwidth=3, name='b')
+c = pyrtl.Input(bitwidth=3, name='c')
+d = pyrtl.Input(bitwidth=3, name='d')
+e = pyrtl.Input(bitwidth=3, name='e')
 
 # Declare control inputs
 s = pyrtl.Input(bitwidth=3, name='s')
@@ -24,15 +35,15 @@ out = pyrtl.Output(bitwidth=3, name='out')
 # Describe your 5:1 MUX implementation
 with pyrtl.conditional_assignment:
     with s == 0:
-        out |= i0
+        out |= a
     with s == 1:
-        out |= i1
+        out |= b
     with s == 2:
-        out |= i2
+        out |= c
     with s == 3:
-        out |= i3
+        out |= d
     with s == 4:
-        out |= i4
+        out |= e
 
 # Simulate and test your design for 16 cycles using random inputs
 sim_trace = pyrtl.SimulationTrace()
@@ -42,16 +53,14 @@ import random
 expected_output = 0
 for cycle in range(16):
     sim.step({
-        'i0': random.choice([0,7]),
-        'i1': random.choice([0,7]),
-        'i2': random.choice([0,7]),
-        'i3': random.choice([0,7]),
-        'i4': random.choice([0,7]),
+        'a': random.choice([0,7]),
+        'b': random.choice([0,7]),
+        'c': random.choice([0,7]),
+        'd': random.choice([0,7]),
+        'e': random.choice([0,7]),
         's': random.choice([0,4])
     })
-    assert (  # asserts that value in ix, where x=s, == output (per cycle)
-            sim_trace.trace[ 'i'+str(sim_trace.trace['s'][cycle]) ][cycle] 
-            == sim_trace.trace['out'][cycle] )
+    assert(sim_trace.trace['out'][cycle]==get_expected_output(cycle))
 
 print ('--- 3-bit 5:1 MUX Simulation ---')
 sim_trace.render_trace()
