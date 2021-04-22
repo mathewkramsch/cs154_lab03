@@ -30,20 +30,20 @@ e = pyrtl.Input(bitwidth=3, name='e')
 s = pyrtl.Input(bitwidth=3, name='s')
 
 # Declare outputs 
-out = pyrtl.Output(bitwidth=3, name='out')
+o = pyrtl.Output(bitwidth=3, name='o')
 
 # Describe your 5:1 MUX implementation
 with pyrtl.conditional_assignment:
     with s == 0:
-        out |= a
+        o |= a
     with s == 1:
-        out |= b
+        o |= b
     with s == 2:
-        out |= c
+        o |= c
     with s == 3:
-        out |= d
+        o |= d
     with s == 4:
-        out |= e
+        o |= e
 
 # Simulate and test your design for 16 cycles using random inputs
 sim_trace = pyrtl.SimulationTrace()
@@ -60,7 +60,7 @@ for cycle in range(16):
         'e': random.choice([0,7]),
         's': random.choice([0,4])
     })
-    assert(sim_trace.trace['out'][cycle]==get_expected_output(cycle))
+    assert(sim_trace.trace['o'][cycle]==get_expected_output(cycle))
 
 print ('--- 3-bit 5:1 MUX Simulation ---')
 sim_trace.render_trace()
