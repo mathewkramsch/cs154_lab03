@@ -22,7 +22,7 @@ with pyrtl.conditional_assignment:
         a_reg.next |= b_reg
         b_reg.next |= a_reg + b_reg
         
-result <<= b_regs  # result should be sum of a,b registers for each cycle
+result <<= b_reg  # result should be sum of a,b registers for each cycle
 
 # Simulate and Test
 sim_trace = pyrtl.SimulationTrace()
